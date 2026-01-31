@@ -1,0 +1,27 @@
+# Datos (no subir datos grandes)
+data/bronze/
+data/silver/
+data/gold/
+*.csv
+*.parquet
+*.json
+
+# Modelos entrenados
+models/*.h5
+models/*.pkl
+*.keras
+
+# Entorno virtual
+venv/
+env/
+
+# Secrets
+.env
+config/secrets.yaml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
