@@ -1,13 +1,14 @@
 from pathlib import Path
 import duckdb
+import pandas as pd
 
 def find_root() -> Path:
     p = Path.cwd().resolve()
-    for _ in range(8):
+    for _ in range(12):
         if (p / "data").exists():
             return p
         p = p.parent
-    raise FileNotFoundError("No encuentro la carpeta /data. Ejecuta desde dentro del repo.")
+    raise FileNotFoundError("No encuentro /data. Ejecuta desde el repo.")
 
 def main():
     root = find_root()
@@ -17,33 +18,37 @@ def main():
 
     con = duckdb.connect()
 
-    # 1) Conteos globales
+    holiday_any = """
+      (COALESCE(is_holiday_barcelona,0)=1
+       OR COALESCE(is_holiday_catalunya,0)=1
+       OR COALESCE(is_holiday_spain,0)=1)
+    """
+
+    print("\n== Conteos globales (derivado) ==")
     q1 = f"""
     SELECT
       COUNT(*) AS n_rows,
-      SUM(is_holiday) AS holiday_any,
-      SUM(is_holiday_barcelona) AS holiday_bcn,
-      SUM(is_holiday_catalunya) AS holiday_cat,
-      SUM(is_holiday_spain) AS holiday_es
+      SUM(CASE WHEN {holiday_any} THEN 1 ELSE 0 END) AS holiday_any,
+      SUM(COALESCE(is_holiday_barcelona,0)) AS holiday_bcn,
+      SUM(COALESCE(is_holiday_catalunya,0)) AS holiday_cat,
+      SUM(COALESCE(is_holiday_spain,0)) AS holiday_es
     FROM read_parquet('{p.as_posix()}')
     """
-    print("\n== Conteos globales ==")
     print(con.execute(q1).df())
 
-    # 2) Conteo por scope (incluye NULL)
+    print("\n== Por holiday_scope (top 30) ==")
     q2 = f"""
     SELECT
-      COALESCE(holiday_scope, 'NULL') AS holiday_scope,
+      holiday_scope,
       COUNT(*) AS n
     FROM read_parquet('{p.as_posix()}')
     GROUP BY 1
     ORDER BY 2 DESC
+    LIMIT 30
     """
-    print("\n== Por holiday_scope (top 30) ==")
-    df2 = con.execute(q2).df()
-    print(df2.head(30))
+    print(con.execute(q2).df())
 
-    # 3) Muestra de días festivos (para validar name/scope)
+    print("\n== Muestra de festivos (primeros 30) ==")
     q3 = f"""
     SELECT
       date,
@@ -51,12 +56,11 @@ def main():
       holiday_name,
       COUNT(*) AS n_rows
     FROM read_parquet('{p.as_posix()}')
-    WHERE is_holiday = 1
+    WHERE {holiday_any}
     GROUP BY 1,2,3
-    ORDER BY date
+    ORDER BY 1
     LIMIT 30
     """
-    print("\n== Muestra de festivos (primeros 30) ==")
     print(con.execute(q3).df())
 
     con.close()
