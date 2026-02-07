@@ -91,7 +91,7 @@ def main():
       SUM(COALESCE(is_holiday_catalunya,0)) AS rows_cat,
       SUM(COALESCE(is_holiday_spain,0)) AS rows_es
     FROM read_parquet('{out.as_posix()}')
-    """
+    """  
     print(con.execute(qv).df())
 
     con.close()

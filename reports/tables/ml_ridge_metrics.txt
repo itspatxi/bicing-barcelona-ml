@@ -1,0 +1,8 @@
+MODEL=Ridge
+MAE=1.8678373220523743
+RMSE=2.780828784849793
+cut_time=2024-07-15 06:00:00
+train_sample=3000000
+test_sample=1000000
+n_features=30
+alpha=1.0
