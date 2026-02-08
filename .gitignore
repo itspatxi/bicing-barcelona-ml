@@ -1,7 +1,7 @@
 # Datos (no subir datos grandes)
 data/bronze/
 data/silver/
-data/gold/
+# data/gold/
 *.csv
 *.parquet
 *.json
