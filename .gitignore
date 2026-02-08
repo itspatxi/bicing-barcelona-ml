@@ -1,7 +1,25 @@
 # Datos (no subir datos grandes)
 data/bronze/
+# Data grande (NO subir)
+data/raw/
 data/silver/
-# data/gold/
+data/gold/parts/
+data/gold/*.parquet
+data/gold/bi/
+data/gold/bi/*.parquet
+
+# PERO sí subimos samples pequeños
+!data/gold/samples/
+!data/gold/samples/*.parquet
+
+# Modelos locales
+models/
+*.joblib
+
+# caches
+__pycache__/
+.ipynb_checkpoints/
+
 *.csv
 *.parquet
 *.json
