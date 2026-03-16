@@ -1,7 +1,6 @@
 # 🚴‍♂️ Bicing Barcelona — End-to-End Data & ML Project
 
 **Autor:** Patxi BA  
-**Curso:** UPGRADE  
 **Fecha:** Febrero 2026  
 
 Proyecto end-to-end de analítica y Machine Learning sobre el sistema de bicicletas compartidas **Bicing (Barcelona)**.  
